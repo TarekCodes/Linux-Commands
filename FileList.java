@@ -12,17 +12,17 @@ public class FileList{
 	public final static int  ALL=0, EXTENDED=1, CANONICAL=2;
 	private static int arr[]={-1,-1,-1};
 
-	private FileList(List<File> l){
+	private FileList(List<File> l){				//constructor
 		list=l;
 	}
 
-	private static void  options(int i){
+	private static void  options(int i){			//stores the options entered
 		arr[i]=i;
 	}
 
-	public static FileList of(String path) throws FileNotFoundException, SecurityException {
-		Path p=Paths.get(path);
-		List<File> lst=new ArrayList<File>();
+	public static FileList of(String path) throws FileNotFoundException, SecurityException {	//creates a FileList object, checks
+		Path p=Paths.get(path);									//if the path is valid and stores the
+		List<File> lst=new ArrayList<File>();							//file(s) in the object
 		boolean isAbs=p.isAbsolute();
 		for(int i=1;i<=p.getNameCount();i++){
 			String s=p.subpath(0,i).toString();
@@ -42,7 +42,7 @@ public class FileList{
 		}	
 		return new FileList(lst);
 	}
-
+	
 	public static FileList empty(){
 		List<File> l=new ArrayList<File>();
 		return new FileList(l);
@@ -60,7 +60,7 @@ public class FileList{
 		return false;
 	}
 
-	public static List<String> format(FileList flist, int ... opts) throws IOException{
+	public static List<String> format(FileList flist, int ... opts) throws IOException{	//formats the output based on the options
 		List<String> slist=new ArrayList<String>();
 		String temp=new String();
 		Collections.sort(flist.list);				
@@ -97,8 +97,8 @@ public class FileList{
 
 
 	
-	public static void main(String [] args) throws FileNotFoundException, IOException{
-			String s=new String(".");
+	public static void main(String [] args) throws FileNotFoundException, IOException{	//command line parsing is done in main
+			String p=new String(".");
 			for(int i=0;i<args.length;i++){
 				if(args[i].charAt(0)=='-'){
 					for(int x=1;x<args[i].length();x++)
@@ -114,12 +114,11 @@ public class FileList{
 						}
 				}
 				else{
-					s=args[i];
+					p=args[i];
 					break;
 				}
 			}
-			Path p=Paths.get(s);
-			FileList fl=FileList.of(p.toString());
+			FileList fl=FileList.of(p);
 			List<String> mlist=FileList.format(fl,FileList.arr);
 			for(String str:mlist)
 				System.out.println(str);				
