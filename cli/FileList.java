@@ -21,26 +21,27 @@ public class FileList{
 	}
 
 	public static FileList of(String path) throws FileNotFoundException, SecurityException {	//creates a FileList object, checks
-		Path p=Paths.get(path);									//if the path is valid and stores the
-		List<File> lst=new ArrayList<File>();							//file(s) in the object
+		Path p=Paths.get(path);									//if the path is valid and
+		FileList f=FileList.empty();								//stores thefile(s) in the object
+		List<File> lst=new ArrayList<File>();
+		File temp=new File("");
 		boolean isAbs=p.isAbsolute();
 		for(int i=1;i<=p.getNameCount();i++){
 			String s=p.subpath(0,i).toString();
 			if(isAbs)
 				s="/".concat(s);
-			File temp=new File(s);
+			temp=new File(s);
 			if(!temp.exists())
 				throw new FileNotFoundException("Can't Access "+temp.toPath()+" : No Such File or Directory");
-			if(!temp.canRead() || !temp.canExecute())
+			if(!temp.canRead() || !temp.canExecute() && temp.isDirectory())
 				throw new SecurityException("Can't Open Directory "+temp.toPath()+" : Permission Denied");
-			if(i==p.getNameCount()){
-				if(temp.isDirectory())
-					lst=Arrays.asList(temp.listFiles());
-				else
-					lst.add(temp);
-			}
-		}	
-		return new FileList(lst);
+		}
+		if(temp.isDirectory())
+			f.list=Arrays.asList(temp.listFiles());
+		else
+			f.list.add(temp);
+		return f;
+
 	}
 	
 	public static FileList empty(){
@@ -48,12 +49,12 @@ public class FileList{
 		return new FileList(l);
 	}
 
-	public  List<File> files(){
-		List<File> l=this.list;
+	public  List<File> files(){								//returns a copy of the object's list
+		List<File> l=new ArrayList<File>(this.list);
 		return l;
 	}
 
-	public boolean contains(File f){
+	public boolean contains(File f){							//checks if the list contains a file
 		for(File temp:this.list)
 			if(f.equals(temp))
 				return true;
@@ -90,7 +91,6 @@ public class FileList{
 			temp=new String();
 			}
 		}
-			
 		return slist; 
 	}
 
@@ -98,29 +98,41 @@ public class FileList{
 
 	
 	public static void main(String [] args) throws FileNotFoundException, IOException{	//command line parsing is done in main
-			String p=new String(".");
-			for(int i=0;i<args.length;i++){
-				if(args[i].charAt(0)=='-'){
-					for(int x=1;x<args[i].length();x++)
-						switch(args[i].charAt(x)){
-							case 'A': FileList.options(FileList.ALL);
-								  break;
-							case 'c': FileList.options(FileList.CANONICAL);
-								  break;
-							case 'l': FileList.options(FileList.EXTENDED);
-								  break;
-							default: System.out.println("Invalid options");
-								  System.exit(1);
-						}
-				}
-				else{
-					p=args[i];
-					break;
-				}
+		String p=new String(".");
+		FileList fl=FileList.empty();
+		for(int i=0;i<args.length;i++){
+			if(args[i].charAt(0)=='-'){
+				for(int x=1;x<args[i].length();x++)
+					switch(args[i].charAt(x)){
+						case 'A': FileList.options(FileList.ALL);
+							  break;
+						case 'c': FileList.options(FileList.CANONICAL);
+							  break;
+						case 'l': FileList.options(FileList.EXTENDED);
+							  break;
+						default: System.out.println("Invalid options");
+							  System.exit(1);
+					}
 			}
-			FileList fl=FileList.of(p);
-			List<String> mlist=FileList.format(fl,FileList.arr);
-			for(String str:mlist)
-				System.out.println(str);				
+			else{
+				p=args[i];
+				break;
+			}
+			}
+		try{
+			fl=FileList.of(s);
+		}
+		catch(FileNotFoundException e){
+			System.out.println(e.getMessage());
+			System.exit(1);
+		}
+		catch(SecurityException e){
+			System.out.println(e.getMessage());
+                        System.exit(1);
+                }
+		List<String> mlist=FileList.format(fl,FileList.arr);
+		for(String str:mlist)
+			System.out.println(str);				
 	}
 }
+
