@@ -34,7 +34,7 @@ public class FileList{
                         temp=new File(s);
                         if(!temp.exists())
                                 throw new FileNotFoundException("Can't Access "+temp.toPath()+" : No Such File or Directory");
-                        if((!temp.canRead() || !temp.canExecute()) && temp.isDirectory())
+                        if((!temp.canRead() || !temp.canExecute()) && temp.isDirectory() && i!=p.getNameCount())
                                 throw new SecurityException("Can't Open Directory "+temp.toPath()+" : Permission Denied");
                 }
                this.list.add(temp);
