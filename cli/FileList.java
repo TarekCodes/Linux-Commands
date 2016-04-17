@@ -10,16 +10,37 @@ import java.text.*;
 public class FileList{
 	private List<File> list;
 	public final static int  ALL=0, EXTENDED=1, CANONICAL=2;
-	private static int arr[]={-1,-1,-1};
+	private static int options[]={-1,-1,-1};
 
 	private FileList(List<File> l){				//constructor
 		list=l;
 	}
 
-	private static void  options(int i){			//stores the options entered
-		arr[i]=i;
+	public static void  setOptions(int i){			//stores the options entered
+		options[i]=i;
 	}
+	public static int [] getOptions(){
+		return options;
+	}
+	
+	 public void add(File f) throws FileNotFoundException, SecurityException{	//adds a file to object's list
+                Path p=f.toPath();
+                File temp=new File("");
+                boolean isAbs=p.isAbsolute();
+                for(int i=1;i<=p.getNameCount();i++){
+                        String s=p.subpath(0,i).toString();
+                        if(isAbs)
+                                s="/".concat(s);
+                        temp=new File(s);
+                        if(!temp.exists())
+                                throw new FileNotFoundException("Can't Access "+temp.toPath()+" : No Such File or Directory");
+                        if((!temp.canRead() || !temp.canExecute()) && temp.isDirectory())
+                                throw new SecurityException("Can't Open Directory "+temp.toPath()+" : Permission Denied");
+                }
+               this.list.add(temp);
+        }
 
+	
 	public static FileList of(String path) throws FileNotFoundException, SecurityException {	//creates a FileList object, checks
 		Path p=Paths.get(path);									//if the path is valid and
 		FileList f=FileList.empty();								//stores thefile(s) in the object
@@ -104,11 +125,11 @@ public class FileList{
 			if(args[i].charAt(0)=='-'){
 				for(int x=1;x<args[i].length();x++)
 					switch(args[i].charAt(x)){
-						case 'A': FileList.options(FileList.ALL);
+						case 'A': FileList.setOptions(FileList.ALL);
 							  break;
-						case 'c': FileList.options(FileList.CANONICAL);
+						case 'c': FileList.setOptions(FileList.CANONICAL);
 							  break;
-						case 'l': FileList.options(FileList.EXTENDED);
+						case 'l': FileList.setOptions(FileList.EXTENDED);
 							  break;
 						default: System.out.println("Invalid options");
 							  System.exit(1);
@@ -130,7 +151,7 @@ public class FileList{
 			System.out.println(e.getMessage());
                         System.exit(1);
                 }
-		List<String> mlist=FileList.format(fl,FileList.arr);
+		List<String> mlist=FileList.format(fl,FileList.getOptions());
 		for(String str:mlist)
 			System.out.println(str);				
 	}
