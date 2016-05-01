@@ -11,19 +11,19 @@ public class FileList{
 	public final static int  ALL=0, EXTENDED=1, CANONICAL=2;
 	private static int options[]={-1,-1,-1};
 
-	private FileList(List<File> l){
+	private FileList(List<File> l){				//private constructor
 		list=l;
 	}
 
-	public static void  setOptions(int i){
+	public static void  setOptions(int i){			//records entered options
 		options[i]=i;
 	}
 	
-	public static int [] getOptions(){
+	public static int [] getOptions(){			//returns the list of options
 		return options;
 	}
 
-	public void add(File f) throws FileNotFoundException, SecurityException{
+	public void add(File f) throws FileNotFoundException, SecurityException{	//adds a file to object's list
 		Path p=f.toPath();
 		File temp=new File(""); 
 		boolean isAbs=p.isAbsolute();
@@ -40,10 +40,10 @@ public class FileList{
                this.list.add(temp);
 	}
 
-	public static FileList of(String path) throws FileNotFoundException, SecurityException {
-		Path p=Paths.get(path);
-		FileList f=FileList.empty();
-		List<File> lst=new ArrayList<File>();
+	public static FileList of(String path) throws FileNotFoundException, SecurityException {	//creates a FileList object after
+		Path p=Paths.get(path);									//checking if the path is valid
+		FileList f=FileList.empty();								//and adds the file(s) to the object
+		List<File> lst=new ArrayList<File>();		
 		File temp=new File("");
 		boolean isAbs=p.isAbsolute();
 		for(int i=1;i<=p.getNameCount();i++){
@@ -63,24 +63,24 @@ public class FileList{
 		return f;
 	}
 
-	public static FileList empty(){
+	public static FileList empty(){						//creates an empty FileList object
 		List<File> l=new ArrayList<File>();
 		return new FileList(l);
 	}
 
-	public  List<File> files(){
+	public  List<File> files(){						//returns a copy of an object's list
 		List<File> l=new ArrayList<File>(this.list);
 		return l;
 	}
 
-	public boolean contains(File f){
+	public boolean contains(File f){					//checks if a list contains a certian file
 		for(File temp:this.list)
 			if(f.equals(temp))
 				return true;
 		return false;
 	}
 
-	public static List<String> format(FileList flist, int ... opts) throws IOException{
+	public static List<String> format(FileList flist, int ... opts) throws IOException{	//formats the output based on the options
 		List<String> slist=new ArrayList<String>();
 		String temp=new String();
 		Collections.sort(flist.list);				
@@ -117,7 +117,7 @@ public class FileList{
 
 
 	
-	public static void main(String [] args) throws FileNotFoundException, IOException{
+	public static void main(String [] args) throws FileNotFoundException, IOException{		//command line parsing is done in main
 			String s=new String(".");
 			FileList fl=FileList.empty();
 			for(int i=0;i<args.length;i++){
