@@ -1,3 +1,4 @@
+package cli;
 class Echo{
 	private final int E=0, N=1;
 	private int opts[], f;
