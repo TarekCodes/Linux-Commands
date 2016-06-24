@@ -3,16 +3,19 @@ class Echo{
 	private final int E=0, N=1;
 	private int opts[], f;
 	private String str;
+	
 	//no-argument constructor
 	Echo(){
 		opts=new int[]{-1,-1};
 		str=new String();
 		f=0;
 	}
+	
 	//change the formatting options
 	void setOptions(int i){
 		opts[i]=i;
 	}
+	
 	//parse command line input and set the options
 	void parseArgs(String [] args){
 		for(int i=0;i<args.length && f<2;i++){
@@ -35,6 +38,7 @@ class Echo{
 		}
 		str=strBuilder.toString();
 	}
+	
 	//returns the final string after applying all the options
 	String repeat(){
 		if(opts[E]==E){
