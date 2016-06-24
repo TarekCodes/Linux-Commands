@@ -1,5 +1,5 @@
-<h1>Description<h1> 
-This is a mock-up of multiple linux commands, written in Java, with room to add a lot more over time
+<h1>Description</h1> 
+<p>This is a mock-up of multiple linux commands, written in Java, with room to add a lot more over time</p>
 <h2>Current commands written so far:</h2>
 <ul>
 	<li>ls (FileList)- lists all the files in current directory or specified path with a some options</li>
